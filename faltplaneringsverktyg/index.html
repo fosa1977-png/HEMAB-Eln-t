@@ -503,6 +503,10 @@
         <div style="background:rgba(15,19,24,0.95);border-bottom:1px solid var(--border);padding:10px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
           <span style="font-family:var(--mono);font-size:11px;color:var(--green);">STEG 2</span>
           <span style="font-size:12px;color:var(--text-muted);"><strong style="color:var(--text);">Klicka</strong> för att placera produkten. Justera position och rotation.</span>
+          <label style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-muted);font-family:var(--mono);cursor:pointer;margin-left:12px;">
+            <input type="checkbox" id="show-overlay-ui" checked onchange="drawPlaceCanvas()" style="cursor:pointer;">
+            Visa ram &amp; mått
+          </label>
           <div id="scale-info" style="font-family:var(--mono);font-size:10px;color:var(--accent);margin-left:auto;"></div>
         </div>
         <div style="flex:1;overflow:auto;position:relative;">
@@ -982,32 +986,36 @@ function drawPlaceCanvas() {
   }
 
   // Ram
-  ctx.strokeStyle = '#00c2ff';
-  ctx.lineWidth = Math.max(3, photoImg.width * 0.003);
-  ctx.strokeRect(-pw / 2, -ph / 2, pw, ph);
+  const showUI = document.getElementById('show-overlay-ui')?.checked ?? true;
 
-  // Måttlinjer
-  const lw = ctx.lineWidth;
-  ctx.strokeStyle = 'rgba(0,194,255,0.6)';
-  ctx.lineWidth = lw / 2;
-  ctx.setLineDash([8, 6]);
-  // Höjd-pil vänster
-  ctx.beginPath(); ctx.moveTo(-pw/2 - 20, -ph/2); ctx.lineTo(-pw/2 - 20, ph/2); ctx.stroke();
-  // Bredd-pil under
-  ctx.beginPath(); ctx.moveTo(-pw/2, ph/2 + 20); ctx.lineTo(pw/2, ph/2 + 20); ctx.stroke();
-  ctx.setLineDash([]);
+  if (showUI) {
+    ctx.strokeStyle = '#00c2ff';
+    ctx.lineWidth = Math.max(3, photoImg.width * 0.003);
+    ctx.strokeRect(-pw / 2, -ph / 2, pw, ph);
 
-  // Etikett
-  const fs = Math.max(20, photoImg.width * 0.018);
-  ctx.font = `bold ${fs}px IBM Plex Mono, monospace`;
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'bottom';
-  const label = `${selectedEquipment?.name || ''} — ${dims.h}m × ${dims.w}m`;
-  const tw = ctx.measureText(label).width;
-  ctx.fillStyle = 'rgba(0,194,255,0.9)';
-  ctx.fillRect(-tw/2 - 10, -ph/2 - fs - 8, tw + 20, fs + 8);
-  ctx.fillStyle = '#0f1318';
-  ctx.fillText(label, 0, -ph/2 - 2);
+    // Måttlinjer
+    const lw = ctx.lineWidth;
+    ctx.strokeStyle = 'rgba(0,194,255,0.6)';
+    ctx.lineWidth = lw / 2;
+    ctx.setLineDash([8, 6]);
+    // Höjd-pil vänster
+    ctx.beginPath(); ctx.moveTo(-pw/2 - 20, -ph/2); ctx.lineTo(-pw/2 - 20, ph/2); ctx.stroke();
+    // Bredd-pil under
+    ctx.beginPath(); ctx.moveTo(-pw/2, ph/2 + 20); ctx.lineTo(pw/2, ph/2 + 20); ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Etikett
+    const fs = Math.max(20, photoImg.width * 0.018);
+    ctx.font = `bold ${fs}px IBM Plex Mono, monospace`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    const label = `${selectedEquipment?.name || ''} — ${dims.h}m × ${dims.w}m`;
+    const tw = ctx.measureText(label).width;
+    ctx.fillStyle = 'rgba(0,194,255,0.9)';
+    ctx.fillRect(-tw/2 - 10, -ph/2 - fs - 8, tw + 20, fs + 8);
+    ctx.fillStyle = '#0f1318';
+    ctx.fillText(label, 0, -ph/2 - 2);
+  }
 
   ctx.restore();
 }
